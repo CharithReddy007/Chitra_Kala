@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* LIGHT MODE */
+:root {
+  --background: 40 33% 96%; /* Warm paper */
+  --foreground: 0 0% 10%; /* Lamp black */
+  --border: 30 20% 85%;
+  --card: 40 33% 98%;
+  --card-foreground: 0 0% 10%;
+  --card-border: 30 20% 85%;
+  --sidebar: 40 33% 94%;
+  --sidebar-foreground: 0 0% 10%;
+  --sidebar-border: 30 20% 85%;
+  --popover: 40 33% 98%;
+  --popover-foreground: 0 0% 10%;
+  --popover-border: 30 20% 85%;
+  --primary: 4 76% 55%; /* Vermillion */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 71% 47%; /* Ochre */
+  --secondary-foreground: 0 0% 100%;
+  --muted: 40 20% 90%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 210 61% 38%; /* Lapis */
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 30 20% 85%;
+  --ring: 4 76% 55%;
+  --chart-1: 4 76% 55%;
+  --chart-2: 30 71% 47%;
+  --chart-3: 210 61% 38%;
+  --chart-4: 150 40% 30%;
+  --chart-5: 0 0% 20%;
+
+  --app-font-sans: 'Lato', sans-serif;
+  --app-font-serif: 'Playfair Display', serif;
+  --app-font-mono: monospace;
+  --radius: 0.25rem;
+}
+
+.dark {
+  --background: 0 0% 8%; /* Very dark warm gray */
+  --foreground: 40 33% 96%;
+  --border: 0 0% 20%;
+  --card: 0 0% 12%;
+  --card-foreground: 40 33% 96%;
+  --card-border: 0 0% 20%;
+  --sidebar: 0 0% 10%;
+  --sidebar-foreground: 40 33% 96%;
+  --sidebar-border: 0 0% 20%;
+  --popover: 0 0% 12%;
+  --popover-foreground: 40 33% 96%;
+  --popover-border: 0 0% 20%;
+  --primary: 4 76% 55%; /* Vermillion */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 71% 47%; /* Ochre */
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 210 61% 48%; /* Lapis */
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 0 0% 20%;
+  --ring: 4 76% 55%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
