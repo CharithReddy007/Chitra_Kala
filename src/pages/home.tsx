@@ -1,6 +1,28 @@
-import React, { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ArrowRight, Brush, BookOpen, Droplet, Sparkles } from "lucide-react";
+
+function useBackgroundMusic() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    const audio = new Audio('./background.mp3');
+    audio.loop = true;
+    audio.volume = 0.35;
+    audioRef.current = audio;
+    return () => { audio.pause(); };
+  }, []);
+
+  const toggle = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) { audio.pause(); setPlaying(false); }
+    else { audio.play(); setPlaying(true); }
+  };
+
+  return { playing, toggle };
+}
 
 const PIGMENTS = [
   {
@@ -152,6 +174,7 @@ const staggerContainer = {
 };
 
 export default function Home() {
+  const { playing, toggle } = useBackgroundMusic();
   const [activePigment, setActivePigment] = useState(PIGMENTS[0]);
 
   const scrollTo = (id: string) => {
@@ -553,6 +576,48 @@ export default function Home() {
         <p>© {new Date().getFullYear()} Chitra Kala Archive.</p>
         <p>Honoring the 64 Kalas of Ancient India.</p>
       </footer>
+
+      <button
+  onClick={toggle}
+  style={{
+    position: 'fixed',
+    top: '80px',
+    right: '24px',
+    zIndex: 9999,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '12px 22px',
+    background: 'rgba(26, 26, 26, 0.92)',
+    border: '1.5px solid #cf8623',
+    borderRadius: '50px',
+    color: '#cf8623',
+    fontFamily: "'Cinzel', serif",
+    fontSize: '0.65rem',
+    letterSpacing: '0.25em',
+    cursor: 'pointer',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 0 24px rgba(207,134,35,0.25)',
+    transition: 'all 0.3s ease',
+  }}
+  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(207,134,35,0.15)')}
+  onMouseLeave={e => (e.currentTarget.style.background = 'rgba(26,26,26,0.92)')}
+>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#cf8623" strokeWidth="1.5">
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+  </svg>
+  <span>MUSIC PLAYER</span>
+  <div style={{
+    width: '7px',
+    height: '7px',
+    borderRadius: '50%',
+    background: playing ? '#e23f2f' : '#555',
+    boxShadow: playing ? '0 0 8px #e23f2f' : 'none',
+    transition: 'all 0.3s ease',
+  }} />
+</button>
     </div>
   );
 }
