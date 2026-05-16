@@ -1,37 +1,7 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ArrowRight, Brush, BookOpen, Droplet, Sparkles } from "lucide-react";
- 
-// ── Audio player hook ──
-function useBackgroundMusic() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playing, setPlaying] = useState(false);
- 
-  useEffect(() => {
-    const audio = new Audio('./background.mp3');
-    audio.loop = true;
-    audio.volume = 0.35;
-    audioRef.current = audio;
- 
-    const tryPlay = () => {
-      audio.play().then(() => setPlaying(true)).catch(() => {});
-    };
-    document.addEventListener('click', tryPlay, { once: true });
-    document.addEventListener('scroll', tryPlay, { once: true });
- 
-    return () => audio.pause();
-  }, []);
- 
-  const toggle = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (playing) { audio.pause(); setPlaying(false); }
-    else { audio.play(); setPlaying(true); }
-  };
- 
-  return { playing, toggle };
-}
- 
+
 const PIGMENTS = [
   {
     id: "vermillion",
@@ -114,7 +84,7 @@ const PIGMENTS = [
     regions: ["Mughal Miniature", "Jain Manuscripts"]
   }
 ];
- 
+
 const STYLES = [
   {
     id: "madhubani",
@@ -165,12 +135,12 @@ const STYLES = [
     bgColor: "#2a704e"
   }
 ];
- 
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
 };
- 
+
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -180,48 +150,39 @@ const staggerContainer = {
     }
   }
 };
- 
+
 export default function Home() {
-  const { playing, toggle } = useBackgroundMusic();
   const [activePigment, setActivePigment] = useState(PIGMENTS[0]);
- 
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
- 
+
   return (
     <div className="min-h-screen bg-[#f7f5f0] text-[#1a1a1a] font-sans selection:bg-[#e23f2f] selection:text-white">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-6 flex justify-between items-center mix-blend-difference text-white">
         <div className="font-serif text-xl tracking-widest uppercase cursor-pointer" onClick={() => scrollTo('hero')}>Chitra Kala</div>
-        <div className="hidden md:flex gap-8 text-xs tracking-widest uppercase font-semibold items-center">
-          <button onClick={() => scrollTo('kalas')} className="hover:text-[#e23f2f] transition-colors">64 Kalas</button>
-          <button onClick={() => scrollTo('philosophy')} className="hover:text-[#e23f2f] transition-colors">Philosophy</button>
-          <button onClick={() => scrollTo('pigments')} className="hover:text-[#e23f2f] transition-colors">Pigments</button>
-          <button onClick={() => scrollTo('techniques')} className="hover:text-[#e23f2f] transition-colors">Preparation</button>
-          <button onClick={() => scrollTo('traditions')} className="hover:text-[#e23f2f] transition-colors">Traditions</button>
-          <button
-            onClick={toggle}
-            title={playing ? 'Mute music' : 'Play music'}
-            className="border border-white/40 px-3 py-1 text-white hover:bg-white/10 transition-colors"
-            style={{ fontFamily: "'Cinzel', serif", fontSize: '0.65rem', letterSpacing: '0.15em' }}
-          >
-            {playing ? '♪ MUTE' : '♪ PLAY'}
-          </button>
+        <div className="hidden md:flex gap-8 text-xs tracking-widest uppercase font-semibold">
+          <button onClick={() => scrollTo('kalas')} className="hover:text-[#e23f2f] transition-colors" data-testid="link-kalas">64 Kalas</button>
+          <button onClick={() => scrollTo('philosophy')} className="hover:text-[#e23f2f] transition-colors" data-testid="link-philosophy">Philosophy</button>
+          <button onClick={() => scrollTo('pigments')} className="hover:text-[#e23f2f] transition-colors" data-testid="link-pigments">Pigments</button>
+          <button onClick={() => scrollTo('techniques')} className="hover:text-[#e23f2f] transition-colors" data-testid="link-techniques">Preparation</button>
+          <button onClick={() => scrollTo('traditions')} className="hover:text-[#e23f2f] transition-colors" data-testid="link-traditions">Traditions</button>
         </div>
       </nav>
- 
+
       {/* Hero Section */}
       <section id="hero" className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img
-            src="/hero.png"
-            alt="Ancient manuscript"
+          <img 
+            src="/hero.png" 
+            alt="Ancient manuscript" 
             className="w-full h-full object-cover object-center opacity-90 scale-105 animate-[pulse_20s_ease-in-out_infinite_alternate]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#f7f5f0]"></div>
         </div>
- 
+        
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -237,22 +198,23 @@ export default function Home() {
             </p>
           </motion.div>
         </div>
- 
-        <motion.div
+
+        <motion.div 
           className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/70 flex flex-col items-center gap-3 cursor-pointer group"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 1 }}
           onClick={() => scrollTo("kalas")}
+          data-testid="button-scroll-down"
         >
           <span className="text-xs tracking-widest uppercase group-hover:text-white transition-colors">Enter the Archive</span>
           <ChevronDown className="animate-bounce w-6 h-6 group-hover:text-white transition-colors" />
         </motion.div>
       </section>
- 
+
       {/* The 64 Kalas Section */}
       <section id="kalas" className="py-32 px-6 md:px-12 max-w-5xl mx-auto text-center">
-        <motion.div
+        <motion.div 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -270,11 +232,11 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
- 
+
       {/* Philosophy Section */}
       <section id="philosophy" className="py-32 px-6 md:px-12 bg-[#1a1a1a] text-white">
         <div className="max-w-7xl mx-auto">
-          <motion.div
+          <motion.div 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
@@ -286,7 +248,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-5xl font-serif mb-8 leading-tight">The Breath of the Earth</h2>
               <div className="space-y-6 text-lg text-gray-400 font-light leading-relaxed">
                 <p>
-                  Painting was never viewed merely as decoration, but as a path to the divine. The colors were not synthetic conveniences but literal fragments of the earth—minerals, plant sap, crushed insects, and soot.
+                  Painting was never viewed merely as decoration, but as a path to the divine. The colors were not synthetic conveniences but literal fragments of the earth—minerals, plant sap, crushed insects, and soot. 
                 </p>
                 <p>
                   When a traditional painter worked, they were reorganizing nature into a new sacred geometry. Every color carried symbolic weight: Red for energy and auspiciousness, Yellow for purity and asceticism, Blue for the infinite and the divine presence of deities like Krishna and Rama.
@@ -303,20 +265,21 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
- 
+
       {/* Pigments Interactive Section */}
       <section id="pigments" className="py-32 bg-[#222] text-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <motion.div
+          <motion.div 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeInUp}
             className="text-center mb-20 relative"
           >
+            {/* Decorative mandala-like faint background */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full z-0"></div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-white/5 rounded-full z-0 rotate-45"></div>
- 
+            
             <div className="relative z-10">
               <Droplet className="w-8 h-8 mx-auto text-[#265b9e] mb-6" />
               <h2 className="text-4xl md:text-6xl font-serif mb-6">The Anatomy of Color</h2>
@@ -325,7 +288,7 @@ export default function Home() {
               </p>
             </div>
           </motion.div>
- 
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 min-h-[650px] relative z-10">
             {/* Pigment Selector */}
             <div className="lg:col-span-4 flex flex-col gap-2">
@@ -334,26 +297,27 @@ export default function Home() {
                   key={pigment.id}
                   onClick={() => setActivePigment(pigment)}
                   className={`group text-left px-6 py-4 border-l-4 transition-all duration-300 ${
-                    activePigment.id === pigment.id
-                      ? "bg-white/10 border-current"
+                    activePigment.id === pigment.id 
+                      ? "bg-white/10 border-current" 
                       : "border-transparent hover:border-white/20 hover:bg-white/5"
                   }`}
-                  style={{ borderLeftColor: activePigment.id === pigment.id ? pigment.color : "" }}
+                  style={{ color: activePigment.id === pigment.id ? pigment.color : "white", borderLeftColor: activePigment.id === pigment.id ? pigment.color : "" }}
+                  data-testid={`button-pigment-${pigment.id}`}
                 >
                   <div className="flex justify-between items-center">
                     <div>
-                      <h3 className="font-serif text-xl text-white">{pigment.name}</h3>
+                      <h3 className="font-serif text-xl" style={{ color: "white" }}>{pigment.name}</h3>
                       <p className="text-xs text-gray-400 tracking-wider mt-1 uppercase">{pigment.commonName}</p>
                     </div>
-                    <div
-                      className="w-6 h-6 rounded-full border-2 border-white/20 transition-transform group-hover:scale-125 flex-shrink-0"
+                    <div 
+                      className="w-6 h-6 rounded-full border-2 border-white/20 transition-transform group-hover:scale-125"
                       style={{ backgroundColor: pigment.color }}
                     />
                   </div>
                 </button>
               ))}
             </div>
- 
+
             {/* Pigment Details Display */}
             <div className="lg:col-span-8 relative">
               <AnimatePresence mode="wait">
@@ -366,34 +330,45 @@ export default function Home() {
                   className="h-full flex flex-col md:flex-row gap-0 shadow-2xl"
                 >
                   <div className="w-full md:w-1/2 aspect-square md:aspect-auto relative bg-[#1a1a1a]">
-                    <img
-                      src={activePigment.image}
-                      alt={activePigment.name}
-                      className="w-full h-full object-cover mix-blend-luminosity opacity-80"
-                    />
-                    <div
-                      className="absolute inset-0 mix-blend-overlay opacity-60"
-                      style={{ backgroundColor: activePigment.color }}
-                    ></div>
-                    <div
+                    {activePigment.image ? (
+                      <>
+                        <img 
+                          src={activePigment.image} 
+                          alt={activePigment.name} 
+                          className="w-full h-full object-cover mix-blend-luminosity opacity-80"
+                        />
+                        <div 
+                          className="absolute inset-0 mix-blend-overlay opacity-60"
+                          style={{ backgroundColor: activePigment.color }}
+                        ></div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: activePigment.color }}>
+                        <div className="w-3/4 h-3/4 border border-white/20 rounded-full flex items-center justify-center">
+                          <div className="w-1/2 h-1/2 border border-white/10 rounded-full"></div>
+                        </div>
+                      </div>
+                    )}
+                    {/* Color Swatch Overlay */}
+                    <div 
                       className="absolute bottom-0 right-0 w-24 h-24 shadow-inner"
                       style={{ backgroundColor: activePigment.color }}
                     ></div>
                   </div>
- 
+                  
                   <div className="w-full md:w-1/2 flex flex-col justify-center bg-[#111] p-8 md:p-12">
                     <div className="mb-8">
-                      <span className="text-[10px] tracking-[0.2em] uppercase mb-2 block" style={{ color: activePigment.color }}>Source</span>
+                      <span className="text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-2 block" style={{ color: activePigment.color }}>Source</span>
                       <p className="text-2xl font-serif text-white">{activePigment.source}</p>
                     </div>
- 
+                    
                     <div className="mb-10">
                       <span className="text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-4 block">History & Process</span>
                       <p className="text-gray-300 leading-relaxed font-light text-sm md:text-base">
                         {activePigment.history}
                       </p>
                     </div>
- 
+
                     <div>
                       <span className="text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-4 block">Found In Traditions</span>
                       <div className="flex flex-wrap gap-2">
@@ -411,10 +386,10 @@ export default function Home() {
           </div>
         </div>
       </section>
- 
+
       {/* Tools & Techniques */}
       <section id="techniques" className="py-32 px-6 md:px-12 max-w-6xl mx-auto">
-        <motion.div
+        <motion.div 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -426,34 +401,34 @@ export default function Home() {
               Transforming raw earth into workable paint required immense patience and precise traditional tools.
             </p>
           </div>
- 
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <motion.div variants={fadeInUp} className="bg-white p-8 border-t-4 border-[#e23f2f] shadow-sm">
               <h3 className="text-2xl font-serif mb-4">Grinding</h3>
-              <p className="text-gray-600 font-light text-sm leading-relaxed">
+              <p className="text-gray-600 font-light text-sm leading-relaxed mb-4">
                 The <em>Sil-Batta</em> (stone mortar and pestle) was essential. Hard minerals like lapis and malachite were ground dry, then wet-ground with water for days until the particles were fine enough to float.
               </p>
             </motion.div>
             <motion.div variants={fadeInUp} className="bg-white p-8 border-t-4 border-[#cf8623] shadow-sm">
               <h3 className="text-2xl font-serif mb-4">Binding</h3>
-              <p className="text-gray-600 font-light text-sm leading-relaxed">
+              <p className="text-gray-600 font-light text-sm leading-relaxed mb-4">
                 Pigments alone cannot stick to canvas. Natural binders were added: <em>Gum Arabic</em> (from the Acacia tree), neem gum, tamarind gum, or animal glues. In some traditions, egg tempera or cow bile was used to increase flow.
               </p>
             </motion.div>
             <motion.div variants={fadeInUp} className="bg-white p-8 border-t-4 border-[#265b9e] shadow-sm">
               <h3 className="text-2xl font-serif mb-4">Brushes</h3>
-              <p className="text-gray-600 font-light text-sm leading-relaxed">
+              <p className="text-gray-600 font-light text-sm leading-relaxed mb-4">
                 Brushes (<em>Tulika</em>) were entirely handmade. Fine detailing used squirrel or camel hair. Broad strokes used goat or calf hair. Some tribal arts simply used chewed twigs or bamboo sticks.
               </p>
             </motion.div>
           </div>
         </motion.div>
       </section>
- 
+
       {/* Traditions Section */}
       <section id="traditions" className="py-32 px-6 md:px-12 bg-[#f0ece1]">
         <div className="max-w-7xl mx-auto">
-          <motion.div
+          <motion.div 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
@@ -465,7 +440,7 @@ export default function Home() {
               Distinct schools of painting evolved across the subcontinent, each developing their own techniques for binding these raw pigments into masterpieces.
             </p>
           </motion.div>
- 
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {STYLES.map((style, i) => (
               <motion.div
@@ -475,30 +450,41 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.6 }}
                 className="group cursor-pointer bg-white p-4 shadow-md hover:shadow-xl transition-shadow"
+                data-testid={`card-style-${style.id}`}
               >
                 <div className="relative aspect-[4/3] mb-6 overflow-hidden bg-[#e8e4db]">
-                  <img
-                    src={style.image}
-                    alt={style.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {style.image ? (
+                    <img 
+                      src={style.image} 
+                      alt={style.name} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: style.bgColor }}>
+                      <Brush className="w-12 h-12 text-white/50 mb-4" />
+                      <span className="text-white/80 font-serif text-xl opacity-0 group-hover:opacity-100 transition-opacity">{style.name} Pattern</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
                 </div>
                 <div className="px-2">
                   <h3 className="font-serif text-2xl mb-1 text-[#1a1a1a]">{style.name}</h3>
                   <p className="text-[10px] tracking-widest text-[#cf8623] uppercase mb-4 font-semibold">{style.region}</p>
-                  <p className="text-gray-600 font-light text-sm leading-relaxed">{style.description}</p>
+                  <p className="text-gray-600 font-light text-sm leading-relaxed">
+                    {style.description}
+                  </p>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
- 
-      {/* Revival Section */}
+
+      {/* Revival / Footer */}
       <section className="bg-[#e23f2f] text-white py-40 px-6 md:px-12 text-center relative overflow-hidden">
+        {/* Decorative background elements */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
- 
+        
         <div className="max-w-3xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -511,8 +497,9 @@ export default function Home() {
             <p className="text-xl md:text-2xl font-light text-white/90 leading-relaxed mb-12">
               Today, a new generation of artists and scholars are returning to these slow, deliberate methods. In an age of instant digital creation, the meditative process of grinding stone into color is an act of grounding—a return to the earth.
             </p>
-            <button
-              className="px-8 py-4 border border-white hover:bg-white hover:text-[#e23f2f] transition-all duration-300 tracking-[0.2em] uppercase text-xs font-semibold inline-flex items-center gap-3"
+            <button 
+              className="px-8 py-4 border border-white hover:bg-white hover:text-[#e23f2f] transition-all duration-300 tracking-[0.2em] uppercase text-xs font-semibold inline-flex items-center gap-3" 
+              data-testid="button-explore-more"
               onClick={() => scrollTo("hero")}
             >
               Return to Top <ArrowRight className="w-4 h-4 -rotate-90" />
@@ -520,7 +507,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
- 
+
       {/* Team Section */}
       <section className="py-24 px-6 md:px-12 bg-[#f0ece1]">
         <div className="max-w-4xl mx-auto text-center">
@@ -535,7 +522,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-5xl font-serif mb-4 text-[#1a1a1a]">Meet the Team</h2>
               <div className="w-16 h-[2px] bg-[#e23f2f] mx-auto mb-14"></div>
             </motion.div>
- 
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { name: "Charith", id: "SE23UARI074" },
@@ -560,8 +547,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
- 
-      {/* Footer */}
+
       <footer className="bg-[#111] text-white/40 py-10 px-6 text-center text-xs tracking-widest uppercase flex flex-col items-center gap-3">
         <div className="w-12 h-[1px] bg-white/20 mb-2"></div>
         <p>© {new Date().getFullYear()} Chitra Kala Archive.</p>
