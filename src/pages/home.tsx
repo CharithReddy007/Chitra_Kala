@@ -8,7 +8,7 @@ function useBackgroundMusic() {
   const [playing, setPlaying] = useState(false);
  
   useEffect(() => {
-    const audio = new Audio('bineleyas-indian-classical-flute-amp-tabla-140472.mp3');
+    const audio = new Audio('./background.mp3');
     audio.loop = true;
     audio.volume = 0.35;
     audioRef.current = audio;
